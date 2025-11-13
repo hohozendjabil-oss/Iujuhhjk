@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNTH•DESIGNS - سيرفر تصميمات احترافية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #050505;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas Background */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Blue Follower */
+        .blue-follower {
+            position: fixed;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(42, 163, 255, 0.15), transparent);
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: 2;
+            transition: width 0.3s ease, height 0.3s ease;
+            transform: translate(-50%, -50%);
+            filter: blur(40px);
+        }
+
+        /* Main Wrapper */
+        .wrap {
+            position: relative;
+            z-index: 3;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 40px 0 100px;
+            text-align: center;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(42, 163, 255, 0.2), rgba(255, 77, 184, 0.2));
+            border: 2px solid rgba(255, 77, 184, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, #2AA3FF, #7A5CFF, #FF4DB8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: robo 3s ease-in-out infinite;
+        }
+
+        @keyframes robo {
+            0%, 100% { letter-spacing: 3px; }
+            50% { letter-spacing: 6px; }
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #9B9B9B;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            background: transparent;
+            border: 1px solid rgba(255, 77, 184, 0.4);
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-weight: 300;
+        }
+
+        .btn:hover {
+            background: rgba(255, 77, 184, 0.1);
+            border-color: #FF4DB8;
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: linear-gradient(90deg, #2AA3FF, #FF4DB8);
+            border: none;
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 8px 25px rgba(255, 77, 184, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 60px 0 100px;
+        }
+
+        .hero-text h2 {
+            font-size: 42px;
+            font-weight: 300;
+            line-height: 1.4;
+            margin-bottom: 25px;
+        }
+
+        .hero-text p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: #9B9B9B;
+            font-weight: 300;
+        }
+
+        .hero-thumbs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .thumb {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, rgba(42, 163, 255, 0.08), rgba(255, 77, 184, 0.05));
+            border: 1px solid rgba(255, 77, 184, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .thumb:hover {
+            border-color: rgba(255, 77, 184, 0.5);
+            transform: scale(1.05);
+        }
+
+        /* Works Section */
+        #works {
+            padding: 80px 0;
+        }
+
+        #works h2 {
+            font-size: 42px;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 50px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 26px;
+            background: transparent;
+            border: 1px solid rgba(255, 77, 184, 0.25);
+            color: rgba(255, 255, 255, 0.6);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: rgba(255, 77, 184, 0.1);
+            border-color: #FF4DB8;
+            color: #FF4DB8;
+        }
+
+        #workGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 77, 184, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 77, 184, 0.4);
+            box-shadow: 0 10px 30px rgba(255, 77, 184, 0.2);
+        }
+
+        .card .img {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, rgba(42, 163, 255, 0.15), rgba(255, 77, 184, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .card .meta {
+            padding: 15px;
+        }
+
+        .card .meta div {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        .card .meta small {
+            font-size: 12px;
+            color: #9B9B9B;
+        }
+
+        /* Clients Section */
+        #clients {
+            padding: 80px 0;
+        }
+
+        #clients h2 {
+            font-size: 42px;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .client-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 77, 184, 0.15);
+            border-radius: 10px;
+            padding: 35px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .client-card:hover {
+            border-color: rgba(255, 77, 184, 0.4);
+            transform: translateY(-5px);
+        }
+
+        .client-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(42, 163, 255, 0.2), rgba(255, 77, 184, 0.2));
+            border: 1px solid rgba(255, 77, 184, 0.3);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .client-name {
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 300;
+        }
+
+        .client-desc {
+            font-size: 13px;
+            color: #9B9B9B;
+        }
+
+        /* Feedback Section */
+        #feedback {
+            padding: 80px 0;
+        }
+
+        #feedback h2 {
+            font-size: 42px;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .feedback-note {
+            text-align: center;
+            color: #9B9B9B;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        .feedback-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 77, 184, 0.15);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 77, 184, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FF4DB8;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #2AA3FF, #FF4DB8);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 300;
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 8px 25px rgba(255, 77, 184, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Modal */
+        #modalBackdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #modalBackdrop.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 77, 184, 0.3);
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 28px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #FF4DB8;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, rgba(42, 163, 255, 0.15), rgba(255, 77, 184, 0.1));
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .modal-desc {
+            color: #9B9B9B;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            color: #9B9B9B;
+            font-size: 14px;
+            border-top: 1px solid rgba(255, 77, 184, 0.1);
+            margin-top: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .title {
+                font-size: 32px;
+            }
+
+            .hero-text h2 {
+                font-size: 28px;
+            }
+
+            #works h2,
+            #clients h2,
+            #feedback h2 {
+                font-size: 32px;
+            }
+
+            .feedback-form {
+                padding: 30px 20px;
+            }
+
+            #workGrid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas Background -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Blue Follower -->
+    <div class="blue-follower" id="blueFollower"></div>
+
+    <!-- Main Content -->
+    <div class="wrap">
+        <!-- Header -->
+        <header>
+            <div class="brand">
+                <div class="logo">✦</div>
+                <div>
+                    <div class="title">SYNTH•DESIGNS</div>
+                </div>
+            </div>
+            <div class="subtitle">سيرفر تصميمات — إبداع إلكتروني</div>
+            <div class="actions">
+                <a href="https://discord.com/channels/1416900809861369941/1419409612720963665" target="_blank" class="btn primary">طلب تصميم</a>
+                <a href="https://discord.gg/RHVfbBdCH" target="_blank" class="btn">انضم إلى السيرفر</a>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-text">
+                <h2>نص تعريفي من سطرين<br>احترافية عالية الجودة</h2>
+                <p>نحن فريق تصميمات رقمي — ننتج هيدرات، ثامنيلات، بوستات وأنماط أنمي احترافية. اعرض أعمالك وتواصل معنا على الديسكورد.</p>
+            </div>
+            <div class="hero-thumbs">
+                <div class="thumb">تصميم 1</div>
+                <div class="thumb">تصميم 2</div>
+                <div class="thumb">تصميم 3</div>
+                <div class="thumb">تصميم 4</div>
+            </div>
+        </section>
+
+        <!-- Works Section -->
+        <section id="works">
+            <h2>أعمالنا</h2>
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="header">هيدرا</button>
+                <button class="filter-btn" data-filter="anime">أنمي</button>
+                <button class="filter-btn" data-filter="poster">بوستات</button>
+                <button class="filter-btn" data-filter="thumbnail">ثامنيلات</button>
+            </div>
+            <div id="workGrid">
+                <div class="card" data-cat="header" data-title="هيدر سيرفر ألعاب">
+                    <div class="img">🎮</div>
+                    <div class="meta">
+                        <div>هيدر سيرفر ألعاب</div>
+                        <small>تصميم هيدرا</small>
+                    </div>
+                </div>
+                <div class="card" data-cat="anime" data-title="شخصية أنمي">
+                    <div class="img">🎌</div>
+                    <div class="meta">
+                        <div>شخصية أنمي</div>
+                        <small>تصميم أنمي</small>
+                    </div>
+                </div>
+                <div class="card" data-cat="poster" data-title="بوستر إعلاني">
+                    <div class="img">📜</div>
+                    <div class="meta">
+                        <div>بوستر إعلاني</div>
+                        <small>بوست</small>
+                    </div>
+                </div>
+                <div class="card" data-cat="thumbnail" data-title="ثامبنيل يوتيوب">
+                    <div class="img">🖼️</div>
+                    <div class="meta">
+                        <div>ثامبنيل يوتيوب</div>
+                        <small>ثامبنيل</small>
+                    </div>
+                </div>
+                <div class="card" data-cat="header" data-title="هيدر مجتمع">
+                    <div class="img">🌟</div>
+                    <div class="meta">
+                        <div>هيدر مجتمع</div>
+                        <small>تصميم هيدرا</small>
+                    </div>
+                </div>
+                <div class="card" data-cat="anime" data-title="مشهد أنمي">
+                    <div class="img">🎨</div>
+                    <div class="meta">
+                        <div>مشهد أنمي</div>
+                        <small>تصميم أنمي</small>
+                    </div>
+                </div>
+                <div class="card" data-cat="poster" data-title="بوستر حدث">
+                    <div class="img">✨</div>
+                    <div class="meta">
+                        <div>بوستر حدث</div>
+                        <small>بوست</small>
+                    </div>
+                </div>
+                <div class="card" data-cat="thumbnail" data-title="غلاف فيديو">
+                    <div class="img">🎬</div>
+                    <div class="meta">
+                        <div>غلاف فيديو</div>
+                        <small>ثامبنيل</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Clients Section -->
+        <section id="clients">
+            <h2>عملاؤنا المميزون</h2>
+            <div class="clients-grid">
+                <div class="client-card">
+                    <div class="client-logo">A</div>
+                    <div class="client-name">عميل: Alpha</div>
+                    <div class="client-desc">سيرفر ألعاب</div>
+                </div>
+                <div class="client-card">
+                    <div class="client-logo">B</div>
+                    <div class="client-name">عميل: Beta</div>
+                    <div class="client-desc">مجتمع أنمي</div>
+                </div>
+                <div class="client-card">
+                    <div class="client-logo">G</div>
+                    <div class="client-name">عميل: Gamma</div>
+                    <div class="client-desc">قناة يوتيوب</div>
+                </div>
+                <div class="client-card">
+                    <div class="client-logo">D</div>
+                    <div class="client-name">عميل: Delta</div>
+                    <div class="client-desc">سيرفر تقني</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feedback Section -->
+        <section id="feedback">
+            <h2>Feedback</h2>
+            <p class="feedback-note">رسالتك لن تُرسل للخارج، هذا الشكل للتجربة.</p>
+            <div class="feedback-form">
+                <div class="form-group">
+                    <label>الاسم</label>
+                    <input type="text" id="nameInput" placeholder="اسمك">
+                </div>
+                <div class="form-group">
+                    <label>الرسالة</label>
+                    <textarea id="messageInput" placeholder="اكتب رسالتك هنا..."></textarea>
+                </div>
+                <button class="submit-btn" onclick="submitFeedback()">إرسال</button>
+        
